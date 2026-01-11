@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<title>Interaktif Video</title>
+
+<style>
+  body{
+    margin:0;
+    background:#F0FFF0; /* başlangıç: yürüyüş rengi */
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-family:Candara;
+  }
+
+  #wrap{
+    position:relative;
+    width:80%;
+    max-width:800px;
+    aspect-ratio:16/9;
+  }
+
+  #info{
+    position:absolute;
+    top:-50px;
+    width:100%;
+    text-align:center;
+    font-size:18px;
+    line-height:1.4;
+    opacity:.9;
+  }
+
+  video{
+    position:absolute;
+    top:30px;
+    left:0;
+    width:100%;
+    border-radius:10px;
+    box-shadow:0 8px 25px rgba(0,0,0,.35);
+  }
+
+  .active{
+    opacity:1;
+    pointer-events:auto;
+  }
+
+  .inactive{
+    opacity:0;
+    pointer-events:none;
+  }
+
+  #label{
+    position:absolute;
+    top:40px;
+    left:20px;
+    background:rgba(0,0,0,.6);
+    padding:10px 18px;
+    border-radius:8px;
+    font-size:18px;
+    z-index:10;
+    color:#fff;
+  }
+
+  p{
+    margin:4px 0;
+    font-size:22px;
+  }
+
+  b{
+    color:red;
+  }
+</style>
+</head>
+
+<body>
+
+<div id="wrap">
+
+  <video id="videoY" src="IMG_1588.mp4" playsinline></video>
+  <video id="videoK" src="IMG_1590.mp4" playsinline></video>
+
+  <div id="info">
+    <p>Kaçmak için <b>K</b>, Yürüyüş için <b>Y</b> tuşuna basın</p>
+    <p>(Sesi açmayı unutmayın)</p>
+  </div>
+
+  <div id="label">Yürüyüş</div>
+
+</div>
+
+<script>
+const Y = document.getElementById("videoY");
+const K = document.getElementById("videoK");
+const label = document.getElementById("label");
+
+window.onload = ()=>{
+  Y.muted = true;
+  K.muted = true;
+
+  Y.controls = true;
+  K.controls = false;
+
+  Y.className = "active";
+  K.className = "inactive";
+
+  Y.play();
+  K.play();
+};
+
+function switchCam(cam){
+  const t = Y.currentTime;
+  Y.currentTime = t;
+  K.currentTime = t;
+
+  if(cam === "Y"){ // Yürüyüş
+    Y.className = "active";
+    K.className = "inactive";
+
+    Y.muted = false;
+    K.muted = true;
+
+    Y.controls = true;
+    K.controls = false;
+
+    label.innerText = "Yürüyüş";
+
+    document.body.style.background = "#F0FFF0";
+    document.body.style.color = "#000";
+  }else{ // Kaçış
+    Y.className = "inactive";
+    K.className = "active";
+
+    Y.muted = true;
+    K.muted = false;
+
+    Y.controls = false;
+    K.controls = true;
+
+    label.innerText = "Kaçış";
+
+    document.body.style.background = "#191970";
+    document.body.style.color = "#fff";
+  }
+}
+
+document.addEventListener("keydown",(e)=>{
+  if(e.key === "y") switchCam("Y");
+  if(e.key === "k") switchCam("K");
+});
+</script>
+
+</body>
+</html>
